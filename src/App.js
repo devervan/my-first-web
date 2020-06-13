@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [data, setData] = useState(null);
+
+  const getProfile = async () => {
+    await fetch(`https://api.github.com/users/devervan`).then(res => res.json())
+      .then(data => {
+        // console.log('data', data)
+        setData(data);
+      })
+  }
+
+  useEffect(() => {
+    getProfile();
+  }, [])
   return (
     <div className="home">
       <div className="row">
@@ -18,6 +31,16 @@ function App() {
           <p>Di dukung oleh GitHub sebagai public repository</p>
           <p>Dan Netlify sebagai server / hosting providernya</p>
           <p>Dengan ini web-apps ini bisa langsung live di internet dan dapat di akses oleh siapapun. Gratis!</p>
+          <hr />
+          {data && (
+            <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '12' }}>
+              <p>Berikut adalah data dinamis yang diambil dari github profile saya:</p>
+              <p>Username: {data.login}</p>
+              <p><img src={data.avatar_url} alt={data.login} width="60" /></p>
+              <p>Jumlah repo: {data.public_repos}</p>
+              <p>URL Github: <a href={data.html_url}>{data.html_url}</a></p>
+            </div>
+          )}
         </div>
 
       </div>
